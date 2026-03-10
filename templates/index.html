@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Disaster Risk Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2 class="logo">AI Dashboard</h2>
+
+    <a href="/dashboard">Overview</a>
+    <a href="/flood">Flood Prediction</a>
+    <a href="/landslide">Landslide Prediction</a>
+
+    <div class="logout">
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+    <h1 class="main-title">AI-Powered Disaster Risk Prediction</h1>
+
+    <p class="subtitle">
+        Predict flood and landslide risks using Machine Learning models.
+        Manage disaster insights with intelligent analytics.
+    </p>
+
+    <div class="card-grid">
+
+        <a href="/flood" class="feature-card">
+            <div class="icon">🌊</div>
+            <h3>Flood Prediction</h3>
+        </a>
+
+        <a href="/landslide" class="feature-card">
+            <div class="icon">⛰</div>
+            <h3>Landslide Prediction</h3>
+        </a>
+
+        <a href="/dashboard" class="feature-card">
+            <div class="icon">📊</div>
+            <h3>View Analytics</h3>
+        </a>
+
+        <a href="/dashboard" class="feature-card">
+            <div class="icon">⚙</div>
+            <h3>System Settings</h3>
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

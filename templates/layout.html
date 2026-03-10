@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Disaster Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>🌊 Disaster AI</h2>
+    <a href="/dashboard">Overview</a>
+    <a href="/flood">Flood</a>
+    <a href="/landslide">Landslide</a>
+    <a href="/logout">Logout</a>
+</div>
+
+<div class="main">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

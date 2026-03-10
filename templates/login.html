@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Disaster System - Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="login-body">
+
+<div id="particles-js"></div>
+
+<div class="login-container">
+
+    <div class="login-card glass">
+
+        <h1 class="login-title">AI Disaster Risk System</h1>
+        <p class="login-subtitle">Secure Login Portal</p>
+
+        <form method="POST">
+
+            <label>Username</label>
+            <input type="text" name="username" placeholder="Enter username" required>
+
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Enter password" required>
+
+            {% if error %}
+            <div class="login-error">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <button type="submit">Login</button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- Particles Background -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+<script>
+particlesJS("particles-js", {
+  particles: {
+    number: { value: 60 },
+    size: { value: 3 },
+    color: { value: "#facc15" },
+    line_linked: {
+      enable: true,
+      distance: 150,
+      color: "#facc15",
+      opacity: 0.3,
+      width: 1
+    }
+  }
+});
+</script>
+
+</body>
+</html>

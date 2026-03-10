@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Flood Prediction</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="sidebar">
+<h2>🌊 Disaster AI</h2>
+
+<a href="/dashboard">Overview</a>
+<a href="/flood" class="active">Flood</a>
+<a href="/landslide">Landslide</a>
+
+<div class="logout">
+<a href="/logout">Logout</a>
+</div>
+</div>
+
+<div class="main-content">
+
+<div class="form-card glass">
+
+<h2>Flood Prediction</h2>
+
+<form action="/predict_flood" method="POST">
+
+<label>January</label>
+<input type="number" step="any" name="Jan" required>
+
+<label>February</label>
+<input type="number" step="any" name="Feb" required>
+
+<label>March</label>
+<input type="number" step="any" name="Mar" required>
+
+<label>April</label>
+<input type="number" step="any" name="Apr" required>
+
+<label>May</label>
+<input type="number" step="any" name="May" required>
+
+<button type="submit">Predict Flood Risk</button>
+
+</form>
+
+{% if flood_result %}
+<div class="result {% if flood_result == 'High Flood Risk' %}high-risk{% else %}low-risk{% endif %}">
+{{ flood_result }}<br>
+Probability: {{ flood_prob }}
+</div>
+{% endif %}
+
+</div>
+
+</div>
+
+</body>
+</html>

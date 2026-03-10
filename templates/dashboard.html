@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Disaster Risk Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div id="particles-js"></div>
+
+<div class="sidebar">
+    <h2 class="logo">AI Dashboard</h2>
+    <a href="/dashboard" class="active">Overview</a>
+    <a href="/flood">Flood Prediction</a>
+    <a href="/landslide">Landslide Prediction</a>
+    <div class="logout">
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<div class="main-content">
+
+    <h1 class="main-title">AI-Powered Disaster Risk System</h1>
+    <p class="subtitle">
+      Intelligent Flood & Landslide Prediction using Machine Learning
+    </p>
+
+    <!-- LIVE DATABASE COUNTERS -->
+    <div class="stats">
+        <div class="stat-card glass">
+            <h2 class="counter" data-target="{{ total_predictions or 0 }}">0</h2>
+            <p>Total Predictions</p>
+        </div>
+
+        <div class="stat-card glass">
+            <h2 class="counter" data-target="{{ high_risk or 0 }}">0</h2>
+            <p>High Risk Cases</p>
+        </div>
+
+        <div class="stat-card glass">
+            <h2 class="counter" data-target="{{ disaster_types or 0 }}">0</h2>
+            <p>Disaster Types</p>
+        </div>
+    </div>
+
+    <div class="card-grid">
+        <a href="/flood" class="feature-card glass">
+            <div class="icon">🌊</div>
+            <h3>Flood Prediction</h3>
+        </a>
+
+        <a href="/landslide" class="feature-card glass">
+            <div class="icon">⛰</div>
+            <h3>Landslide Prediction</h3>
+        </a>
+    </div>
+
+    <!-- DISASTER VISUAL SECTION -->
+    <div class="glass" style="margin-top:50px; padding:30px; border-radius:15px;">
+        <h2 style="color:#facc15; text-align:center;">🌍 Disaster Monitoring Overview</h2>
+
+        <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:30px; margin-top:30px;">
+
+            <div style="text-align:center;">
+                <h3>🌊 Flood Situation</h3>
+                <img src="{{ url_for('static', filename='flood.jpg') }}"
+                     style="width:100%; border-radius:15px;"
+                     class="disaster-img"
+                     onerror="this.src='https://via.placeholder.com/600x400?text=Flood+Image+Missing'">
+            </div>
+
+            <div style="text-align:center;">
+                <h3>⛰ Landslide Situation</h3>
+                <img src="{{ url_for('static', filename='landslide.jpg') }}"
+                     style="width:100%; border-radius:15px;"
+                     class="disaster-img"
+                     onerror="this.src='https://via.placeholder.com/600x400?text=Landslide+Image+Missing'">
+            </div>
+
+        </div>
+    </div>
+
+    <!-- RECENT PREDICTIONS -->
+    <div class="glass" style="margin-top:50px; padding:30px; border-radius:15px;">
+        <h2 style="color:#facc15; text-align:center;">📊 Recent Predictions</h2>
+
+        <table style="width:100%; margin-top:20px; border-collapse:collapse; text-align:center;">
+            <tr style="background:rgba(255,255,255,0.1);">
+                <th style="padding:10px;">Type</th>
+                <th style="padding:10px;">Probability</th>
+                <th style="padding:10px;">Result</th>
+                <th style="padding:10px;">Date</th>
+            </tr>
+
+            {% for row in history %}
+            <tr>
+                <td style="padding:10px;">{{ row[0] }}</td>
+                <td style="padding:10px;">{{ row[1] }}</td>
+                <td style="padding:10px;">{{ row[2] }}</td>
+                <td style="padding:10px;">{{ row[3] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- GRAPH SECTION -->
+    <div class="glass" style="margin-top:50px; padding:30px; border-radius:15px;">
+        <h2 style="color:#e6e211; text-align:center;">📈 Prediction Distribution</h2>
+        <canvas id="predictionChart"></canvas>
+    </div>
+
+</div>
+
+<!-- Counter Animation -->
+<script>
+const counters = document.querySelectorAll('.counter');
+counters.forEach(counter => {
+    counter.innerText = '0';
+    const updateCounter = () => {
+        const target = +counter.getAttribute('data-target');
+        const c = +counter.innerText;
+        const increment = target / 100;
+
+        if (c < target) {
+            counter.innerText = Math.ceil(c + increment);
+            setTimeout(updateCounter, 20);
+        } else {
+            counter.innerText = target;
+        }
+    };
+    updateCounter();
+});
+</script>
+
+<!-- PREMIUM CHART -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    var labels = JSON.parse('{{ labels | default([]) | tojson | safe }}');
+    var values = JSON.parse('{{ values | default([]) | tojson | safe }}');
+
+    var canvas = document.getElementById('predictionChart');
+    if (!canvas) return;
+
+    var ctx = canvas.getContext('2d');
+
+    var gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, "rgba(250, 204, 21, 0.9)");
+    gradient.addColorStop(1, "rgba(250, 204, 21, 0.3)");
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Number of Predictions',
+                data: values,
+                backgroundColor: gradient,
+                borderColor: "#facc15",
+                borderWidth: 2,
+                borderRadius: 15,
+                borderSkipped: false,
+                hoverBackgroundColor: "rgba(255,255,255,0.8)"
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: "#ffffff",
+                        font: { size: 14 }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: "#ffffff" },
+                    grid: { display: false }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: { color: "#ffffff", stepSize: 1 },
+                    grid: { color: "rgba(255,255,255,0.1)" }
+                }
+            },
+            animation: {
+                duration: 1500,
+                easing: 'easeOutQuart'
+            }
+        }
+    });
+
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+<script>
+particlesJS("particles-js", {
+  particles: {
+    number: { value: 80 },
+    size: { value: 3 },
+    color: { value: "#facc15" },
+    line_linked: {
+      enable: true,
+      distance: 150,
+      color: "#facc15",
+      opacity: 0.4,
+      width: 1
+    }
+  }
+});
+</script>
+
+</body>
+</html>

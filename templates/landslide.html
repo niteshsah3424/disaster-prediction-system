@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Landslide Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>🌊 Disaster AI</h2>
+
+    <a href="/dashboard">Overview</a>
+    <a href="/flood">Flood</a>
+    <a href="/landslide" class="active">Landslide</a>
+
+    <div class="logout">
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+    <div class="form-card glass">
+
+        <h2>Landslide Prediction</h2>
+
+        <form action="/predict_landslide" method="POST">
+
+            <label>Latitude</label>
+            <input type="number" step="any" name="latitude" required>
+
+            <label>Longitude</label>
+            <input type="number" step="any" name="longitude" required>
+
+            <label>Year</label>
+            <input type="number" name="year" required>
+
+            <label>Month</label>
+            <input type="number" name="month" required>
+
+            <label>Day</label>
+            <input type="number" name="day" required>
+
+            <label>Country</label>
+            <input type="text" name="country" required>
+
+            <label>Category</label>
+            <input type="text" name="category" required>
+
+            <label>Setting</label>
+            <input type="text" name="setting" required>
+
+            <button type="submit">Predict Landslide Risk</button>
+
+        </form>
+
+        {% if landslide_result %}
+        <div class="result {% if landslide_result == 'High Landslide Risk' %}high-risk{% else %}low-risk{% endif %}">
+            {{ landslide_result }} <br>
+            Probability: {{ landslide_prob }}
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
