@@ -50,13 +50,15 @@ def save_prediction(disaster_type, probability, result):
 # =========================
 # LOAD MODELS
 # =========================
-flood_model = pickle.load(open("flood_model.pkl", "rb"))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-landslide_model = pickle.load(open("landslide_model.pkl", "rb"))
-landslide_imputer = pickle.load(open("landslide_imputer.pkl", "rb"))
-landslide_scaler = pickle.load(open("landslide_scaler.pkl", "rb"))
-landslide_columns = pickle.load(open("landslide_columns.pkl", "rb"))
-landslide_threshold = pickle.load(open("landslide_threshold.pkl", "rb"))
+flood_model = pickle.load(open(os.path.join(BASE_DIR, "flood_model.pkl"), "rb"))
+
+landslide_model = pickle.load(open(os.path.join(BASE_DIR, "landslide_model.pkl"), "rb"))
+landslide_imputer = pickle.load(open(os.path.join(BASE_DIR, "landslide_imputer.pkl"), "rb"))
+landslide_scaler = pickle.load(open(os.path.join(BASE_DIR, "landslide_scaler.pkl"), "rb"))
+landslide_columns = pickle.load(open(os.path.join(BASE_DIR, "landslide_columns.pkl"), "rb"))
+landslide_threshold = pickle.load(open(os.path.join(BASE_DIR, "landslide_threshold.pkl"), "rb"))
 
 # =========================
 # LOGIN PAGE
