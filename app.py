@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import numpy as np
 import pandas as pd
-import pickle
+import joblib   # ✅ pickle hata ke joblib use kar rahe hain
 import sqlite3
 import os
 
@@ -46,19 +46,18 @@ def save_prediction(disaster_type, probability, result):
     conn.commit()
     conn.close()
 
-
 # =========================
-# LOAD MODELS
+# LOAD MODELS (FIXED ✅)
 # =========================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-flood_model = pickle.load(open(os.path.join(BASE_DIR, "flood_model.pkl"), "rb"))
+flood_model = joblib.load(os.path.join(BASE_DIR, "flood_model.pkl"))
 
-landslide_model = pickle.load(open(os.path.join(BASE_DIR, "landslide_model.pkl"), "rb"))
-landslide_imputer = pickle.load(open(os.path.join(BASE_DIR, "landslide_imputer.pkl"), "rb"))
-landslide_scaler = pickle.load(open(os.path.join(BASE_DIR, "landslide_scaler.pkl"), "rb"))
-landslide_columns = pickle.load(open(os.path.join(BASE_DIR, "landslide_columns.pkl"), "rb"))
-landslide_threshold = pickle.load(open(os.path.join(BASE_DIR, "landslide_threshold.pkl"), "rb"))
+landslide_model = joblib.load(os.path.join(BASE_DIR, "landslide_model.pkl"))
+landslide_imputer = joblib.load(os.path.join(BASE_DIR, "landslide_imputer.pkl"))
+landslide_scaler = joblib.load(os.path.join(BASE_DIR, "landslide_scaler.pkl"))
+landslide_columns = joblib.load(os.path.join(BASE_DIR, "landslide_columns.pkl"))
+landslide_threshold = joblib.load(os.path.join(BASE_DIR, "landslide_threshold.pkl"))
 
 # =========================
 # LOGIN PAGE
@@ -89,19 +88,15 @@ def dashboard():
     conn = sqlite3.connect("disaster.db")  
     cursor = conn.cursor()
 
-    # Total predictions
     cursor.execute("SELECT COUNT(*) FROM predictions")
     total_predictions = cursor.fetchone()[0] or 0
 
-    # High risk cases
     cursor.execute("SELECT COUNT(*) FROM predictions WHERE result LIKE 'High%'")
     high_risk = cursor.fetchone()[0] or 0
 
-    # Disaster types
     cursor.execute("SELECT COUNT(DISTINCT disaster_type) FROM predictions")
     disaster_types = cursor.fetchone()[0] or 0
 
-    # Recent history
     cursor.execute("""
         SELECT disaster_type, probability, result, date 
         FROM predictions 
@@ -109,7 +104,6 @@ def dashboard():
     """)
     history = cursor.fetchall()
 
-    # Chart data
     cursor.execute("""
         SELECT disaster_type, COUNT(*) 
         FROM predictions 
@@ -246,4 +240,3 @@ def logout():
 if __name__ == "__main__":
     init_db()
     app.run(debug=True)
-
