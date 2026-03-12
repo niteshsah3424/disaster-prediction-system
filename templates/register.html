@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AI Disaster System - Login</title>
+    <title>AI Disaster System - Register</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="login-body">
@@ -12,18 +12,20 @@
 
     <div class="login-card glass">
 
-        <h1 class="login-title">AI Disaster Risk System</h1>
-        <p class="login-subtitle">Secure Login Portal</p>
+        <h1 class="login-title">Create Account</h1>
+        <p class="login-subtitle">Join AI Disaster Risk System</p>
 
         <form method="POST">
 
             <label>Username</label>
             <input type="text" name="username" placeholder="Enter username" required>
 
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Enter email" required>
+
             <label>Password</label>
             <input type="password" name="password" placeholder="Enter password" required>
 
-            <!-- Flash Messages -->
             {% with messages = get_flashed_messages() %}
               {% if messages %}
                 <div class="login-error">
@@ -32,24 +34,13 @@
               {% endif %}
             {% endwith %}
 
-            {% if error %}
-            <div class="login-error">
-                {{ error }}
-            </div>
-            {% endif %}
-
-            <button type="submit">Login</button>
+            <button type="submit">Register</button>
 
         </form>
 
-        <!-- Links -->
         <div style="text-align:center; margin-top:20px;">
-            <a href="/forgot" style="color:#facc15; text-decoration:none;">
-                Forgot Password?
-            </a>
-            <br><br>
-            <a href="/register" style="color:#ffffff; text-decoration:none;">
-                Create New Account
+            <a href="/" style="color:#facc15; text-decoration:none;">
+                Already have an account? Login
             </a>
         </div>
 

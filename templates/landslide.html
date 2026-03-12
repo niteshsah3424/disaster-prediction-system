@@ -26,31 +26,36 @@
 
         <h2>Landslide Prediction</h2>
 
+        <!-- ✅ User Guidance Added -->
+        <p style="color:#facc15; margin-bottom:20px;">
+            Please enter accurate geographic and environmental details for better prediction accuracy.
+        </p>
+
         <form action="/predict_landslide" method="POST">
 
-            <label>Latitude</label>
-            <input type="number" step="any" name="latitude" required>
+            <label>Latitude (°)</label>
+            <input type="number" step="any" name="latitude" placeholder="e.g. 20.2961" required>
 
-            <label>Longitude</label>
-            <input type="number" step="any" name="longitude" required>
+            <label>Longitude (°)</label>
+            <input type="number" step="any" name="longitude" placeholder="e.g. 85.8245" required>
 
             <label>Year</label>
-            <input type="number" name="year" required>
+            <input type="number" name="year" placeholder="e.g. 2026" required>
 
-            <label>Month</label>
-            <input type="number" name="month" required>
+            <label>Month (1-12)</label>
+            <input type="number" min="1" max="12" name="month" placeholder="e.g. 7" required>
 
-            <label>Day</label>
-            <input type="number" name="day" required>
+            <label>Day (1-31)</label>
+            <input type="number" min="1" max="31" name="day" placeholder="e.g. 15" required>
 
             <label>Country</label>
-            <input type="text" name="country" required>
+            <input type="text" name="country" placeholder="e.g. India" required>
 
-            <label>Category</label>
-            <input type="text" name="category" required>
+            <label>Landslide Category</label>
+            <input type="text" name="category" placeholder="e.g. Rockfall / Debris Flow" required>
 
-            <label>Setting</label>
-            <input type="text" name="setting" required>
+            <label>Landslide Setting</label>
+            <input type="text" name="setting" placeholder="e.g. Mountain / Roadside" required>
 
             <button type="submit">Predict Landslide Risk</button>
 
@@ -60,6 +65,23 @@
         <div class="result {% if landslide_result == 'High Landslide Risk' %}high-risk{% else %}low-risk{% endif %}">
             {{ landslide_result }} <br>
             Probability: {{ landslide_prob }}
+        </div>
+
+        <!-- ✅ Cause Explanation -->
+        <div class="result-box">
+            <h3>Cause Explanation</h3>
+            <ul>
+                {% for cause in landslide_causes %}
+                <li>{{ cause }}</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Safety Guidelines</h3>
+            <ul>
+                {% for safety in landslide_safety %}
+                <li>{{ safety }}</li>
+                {% endfor %}
+            </ul>
         </div>
         {% endif %}
 

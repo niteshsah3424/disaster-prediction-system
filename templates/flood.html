@@ -24,22 +24,27 @@
 
 <h2>Flood Prediction</h2>
 
+<!-- ✅ Rainfall Unit Info Added -->
+<p style="color:#facc15; margin-bottom:20px;">
+Please enter monthly rainfall data in <strong>Millimeters (mm)</strong>
+</p>
+
 <form action="/predict_flood" method="POST">
 
-<label>January</label>
-<input type="number" step="any" name="Jan" required>
+<label>January (mm)</label>
+<input type="number" step="any" name="Jan" placeholder="e.g. 120" required>
 
-<label>February</label>
-<input type="number" step="any" name="Feb" required>
+<label>February (mm)</label>
+<input type="number" step="any" name="Feb" placeholder="e.g. 95" required>
 
-<label>March</label>
-<input type="number" step="any" name="Mar" required>
+<label>March (mm)</label>
+<input type="number" step="any" name="Mar" placeholder="e.g. 140" required>
 
-<label>April</label>
-<input type="number" step="any" name="Apr" required>
+<label>April (mm)</label>
+<input type="number" step="any" name="Apr" placeholder="e.g. 200" required>
 
-<label>May</label>
-<input type="number" step="any" name="May" required>
+<label>May (mm)</label>
+<input type="number" step="any" name="May" placeholder="e.g. 250" required>
 
 <button type="submit">Predict Flood Risk</button>
 
@@ -50,6 +55,24 @@
 {{ flood_result }}<br>
 Probability: {{ flood_prob }}
 </div>
+
+<!-- ✅ Cause Explanation -->
+<div class="result-box">
+<h3>Cause Explanation</h3>
+<ul>
+{% for cause in flood_causes %}
+<li>{{ cause }}</li>
+{% endfor %}
+</ul>
+
+<h3>Safety Guidelines</h3>
+<ul>
+{% for safety in flood_safety %}
+<li>{{ safety }}</li>
+{% endfor %}
+</ul>
+</div>
+
 {% endif %}
 
 </div>
