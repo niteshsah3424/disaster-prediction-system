@@ -327,3 +327,69 @@ button:hover {
     transform: scale(1.05);
     box-shadow: 0 0 25px rgba(250, 204, 21, 0.6);
 }
+
+/* =========================
+   CHATBOT STYLES
+========================= */
+
+.chatbot-popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    height: 500px;
+    background: #111827;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 30px rgba(0,0,0,0.6);
+    overflow: hidden;
+    z-index: 9999;
+}
+
+.chat-header {
+    background: #facc15;
+    color: black;
+    padding: 15px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    font-size: 14px;
+}
+
+.chat-input-area {
+    display: flex;
+    padding: 10px;
+    background: #1f2937;
+}
+
+.chat-input-area input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background: white;     /* FIXED */
+    color: black;          /* FIXED */
+    font-size: 14px;
+}
+
+.chat-input-area button {
+    width: auto;
+    margin-left: 10px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    background: #facc15;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.chat-input-area button:hover {
+    background: #eab308;
+}

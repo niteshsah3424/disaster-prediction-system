@@ -13,6 +13,9 @@
     <a href="/dashboard" class="active">Overview</a>
     <a href="/flood">Flood Prediction</a>
     <a href="/landslide">Landslide Prediction</a>
+
+    <a href="#" onclick="toggleChat()">AI Assistant Chatbot</a>
+
     <div class="logout">
         <a href="/logout">Logout</a>
     </div>
@@ -42,13 +45,13 @@
             <p>Disaster Types</p>
         </div>
 
-        <!-- ✅ NEW HIGH RISK PERCENTAGE CARD -->
         <div class="stat-card glass">
             <h2>{{ risk_percent or 0 }}%</h2>
             <p>High Risk Percentage</p>
         </div>
     </div>
 
+    <!-- CARD GRID -->
     <div class="card-grid">
         <a href="/flood" class="feature-card glass">
             <div class="icon">🌊</div>
@@ -59,32 +62,85 @@
             <div class="icon">⛰</div>
             <h3>Landslide Prediction</h3>
         </a>
+
+        <a href="#" onclick="toggleChat()" class="feature-card glass">
+            <div class="icon">🤖</div>
+            <h3>AI Assistant Chatbot</h3>
+        </a>
     </div>
 
-    <!-- DISASTER VISUAL SECTION -->
-    <div class="glass" style="margin-top:50px; padding:30px; border-radius:15px;">
-        <h2 style="color:#facc15; text-align:center;">🌍 Disaster Monitoring Overview</h2>
 
-        <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:30px; margin-top:30px;">
 
-            <div style="text-align:center;">
-                <h3>🌊 Flood Situation</h3>
-                <img src="{{ url_for('static', filename='flood.jpg') }}"
-                     style="width:100%; border-radius:15px;"
-                     class="disaster-img"
-                     onerror="this.src='https://via.placeholder.com/600x400?text=Flood+Image+Missing'">
-            </div>
 
-            <div style="text-align:center;">
-                <h3>⛰ Landslide Situation</h3>
-                <img src="{{ url_for('static', filename='landslide.jpg') }}"
-                     style="width:100%; border-radius:15px;"
-                     class="disaster-img"
-                     onerror="this.src='https://via.placeholder.com/600x400?text=Landslide+Image+Missing'">
-            </div>
 
-        </div>
-    </div>
+
+<!-- Section Heading -->
+<h2 style="
+text-align:center;
+color:#facc15;
+margin-top:30px;
+margin-bottom:20px;
+font-size:28px;
+">
+🌍 Disaster Types We Predict
+</h2>
+
+<div style="display:flex; gap:20px; margin-top:20px; margin-bottom:20px;">
+
+<!-- Flood Image -->
+<div style="position:relative; width:50%;">
+<img 
+src="{{ url_for('static', filename='flood.jpg') }}"
+style="
+width:100%;
+max-height:320px;
+object-fit:cover;
+border-radius:15px;
+">
+
+<h3 style="
+position:absolute;
+top:15px;
+left:20px;
+color:white;
+background:rgba(0,0,0,0.6);
+padding:8px 15px;
+border-radius:8px;
+font-size:20px;
+">
+🌊 Flood
+</h3>
+</div>
+
+<!-- Landslide Image -->
+<div style="position:relative; width:50%;">
+<img 
+src="{{ url_for('static', filename='landslide.jpg') }}"
+style="
+width:100%;
+max-height:320px;
+object-fit:cover;
+border-radius:15px;
+">
+
+<h3 style="
+position:absolute;
+top:15px;
+left:20px;
+color:white;
+background:rgba(0,0,0,0.6);
+padding:8px 15px;
+border-radius:8px;
+font-size:20px;
+">
+⛰ Landslide
+</h3>
+</div>
+
+</div>
+   
+
+     
 
     <!-- RECENT PREDICTIONS -->
     <div class="glass" style="margin-top:50px; padding:30px; border-radius:15px;">
@@ -109,7 +165,7 @@
         </table>
     </div>
 
-    <!-- GRAPH SECTION -->
+    <!-- GRAPH -->
     <div class="glass" style="margin-top:50px; padding:30px; border-radius:15px;">
         <h2 style="color:#e6e211; text-align:center;">📈 Prediction Distribution</h2>
         <canvas id="predictionChart"></canvas>
@@ -117,9 +173,34 @@
 
 </div>
 
+
+<!-- ================= CHATBOT ================= -->
+
+<div id="chatbot" class="chatbot-popup">
+
+    <div class="chat-header">
+        🤖 AI Disaster Assistant
+    </div>
+
+    <div id="chat-box" class="chat-messages"></div>
+
+    <div class="chat-input-area">
+        <input type="text" id="user-input"
+            placeholder="Ask about flood or landslide..."
+            onkeypress="if(event.key==='Enter'){sendMessage()}">
+
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+</div>
+
+
+<!-- ================= SCRIPTS ================= -->
+
 <!-- Counter Animation -->
 <script>
 const counters = document.querySelectorAll('.counter');
+
 counters.forEach(counter => {
     counter.innerText = '0';
     const updateCounter = () => {
@@ -138,23 +219,19 @@ counters.forEach(counter => {
 });
 </script>
 
-<!-- PREMIUM CHART -->
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
 
-    var labels = JSON.parse('{{ labels | default([]) | tojson | safe }}');
-    var values = JSON.parse('{{ values | default([]) | tojson | safe }}');
+    var labels = {{ labels | tojson | safe }};
+    var values = {{ values | tojson | safe }};
 
     var canvas = document.getElementById('predictionChart');
     if (!canvas) return;
 
     var ctx = canvas.getContext('2d');
-
-    var gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, "rgba(250, 204, 21, 0.9)");
-    gradient.addColorStop(1, "rgba(250, 204, 21, 0.3)");
 
     new Chart(ctx, {
         type: 'bar',
@@ -163,38 +240,16 @@ document.addEventListener("DOMContentLoaded", function() {
             datasets: [{
                 label: 'Number of Predictions',
                 data: values,
-                backgroundColor: gradient,
-                borderColor: "#facc15",
                 borderWidth: 2,
-                borderRadius: 15,
-                borderSkipped: false,
-                hoverBackgroundColor: "rgba(255,255,255,0.8)"
+                borderRadius: 10
             }]
         },
         options: {
             responsive: true,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: "#ffffff",
-                        font: { size: 14 }
-                    }
-                }
-            },
             scales: {
-                x: {
-                    ticks: { color: "#ffffff" },
-                    grid: { display: false }
-                },
                 y: {
-                    beginAtZero: true,
-                    ticks: { color: "#ffffff", stepSize: 1 },
-                    grid: { color: "rgba(255,255,255,0.1)" }
+                    beginAtZero: true
                 }
-            },
-            animation: {
-                duration: 1500,
-                easing: 'easeOutQuart'
             }
         }
     });
@@ -202,21 +257,64 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
+<!-- Chatbot Script -->
+<script>
+function toggleChat() {
+    let chat = document.getElementById("chatbot");
+
+    if (chat.style.display === "flex") {
+        chat.style.display = "none";
+    } else {
+        chat.style.display = "flex";
+        chat.style.flexDirection = "column";
+    }
+}
+
+function sendMessage() {
+    let inputField = document.getElementById("user-input");
+    let message = inputField.value;
+
+    if(message.trim() === "") return;
+
+    let chatBox = document.getElementById("chat-box");
+
+    chatBox.innerHTML += `<p><b>You:</b> ${message}</p>`;
+
+    fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: message})
+    })
+    .then(response => response.json())
+    .then(data => {
+        chatBox.innerHTML += `<p style="color:#facc15;"><b>Bot:</b> ${data.reply}</p>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    });
+
+    inputField.value = "";
+}
+</script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+
 <script>
 particlesJS("particles-js", {
-  particles: {
-    number: { value: 80 },
-    size: { value: 3 },
-    color: { value: "#facc15" },
-    line_linked: {
-      enable: true,
-      distance: 150,
-      color: "#facc15",
-      opacity: 0.4,
-      width: 1
-    }
-  }
+  "particles": {
+    "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+    "color": { "value": "#facc15" },
+    "shape": { "type": "triangle" },
+    "opacity": { "value": 0.5, "random": true },
+    "size": { "value": 4, "random": true },
+    "line_linked": { "enable": true, "distance": 150, "color": "#facc15", "opacity": 0.4, "width": 1 },
+    "move": { "enable": true, "speed": 3 }
+  },
+  "interactivity": {
+    "detect_on": "canvas",
+    "events": { "onhover": { "enable": true, "mode": "repulse" }, "onclick": { "enable": true, "mode": "push" } },
+    "modes": { "repulse": { "distance": 100 }, "push": { "particles_nb": 4 } }
+  },
+  "retina_detect": true
 });
 </script>
 

@@ -4,10 +4,24 @@ import pandas as pd
 import joblib
 import sqlite3
 import os
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import jsonify
+from openai import OpenAI
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
+
+load_dotenv()
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.getenv("OPENROUTER_API_KEY"),
+)
+
+# Per-user chat memory
+chat_history = {}
 
 # =========================
 # DATABASE INIT
@@ -331,6 +345,46 @@ def predict_landslide():
                            landslide_causes=landslide_causes,
                            landslide_safety=landslide_safety)
 
+
+# =========================
+# CHATBOT ROUTE
+# =========================
+@app.route("/chat", methods=["POST"])
+def chat():
+
+    if "user" not in session:
+        return jsonify({"reply": "Please login first."})
+
+    user_message = request.json.get("message")
+
+    if not user_message:
+        return jsonify({"reply": "Message is empty!"})
+
+    username = session["user"]
+
+    # Create memory per user
+    if username not in chat_history:
+        chat_history[username] = []
+
+    chat_history[username].append({
+        "role": "user",
+        "content": user_message
+    })
+
+    completion = client.chat.completions.create(
+        model="stepfun/step-3.5-flash:free",
+        messages=chat_history[username],
+    )
+
+    bot_reply = completion.choices[0].message.content
+
+    chat_history[username].append({
+        "role": "assistant",
+        "content": bot_reply
+    })
+
+    return jsonify({"reply": bot_reply})
+
 # =========================
 # LOGOUT
 # =========================
@@ -338,6 +392,7 @@ def predict_landslide():
 def logout():
     session.pop("user", None)
     return redirect(url_for("login"))
+
 
 # =========================
 # RUN
